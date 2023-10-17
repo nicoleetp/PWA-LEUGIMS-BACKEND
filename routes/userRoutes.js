@@ -11,6 +11,7 @@ import {
 
 const router = express.Router();
 
+// routes http
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);
 router.post("/", registerUser);
