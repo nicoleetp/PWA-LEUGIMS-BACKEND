@@ -11,7 +11,6 @@ import {
 
 const router = express.Router();
 
-//peticiones a la api
 router.get("/", getAllUsers);
 router.get("/:id", getUserById);
 router.post("/", registerUser);
