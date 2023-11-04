@@ -9,13 +9,13 @@ const userSchema = mongoose.Schema({
     },
     lastname: {
         type: String,
-        required: true,
-        trim: true
+        trim: true,
+        default: null
     },
     dni: {
         type: String,
-        required: true,
-        trim: true
+        trim: true,
+        default: null
     },
     phone: {
         type: String,
@@ -38,12 +38,14 @@ const userSchema = mongoose.Schema({
         required: true,
         trim: true
     }
+}, {
+    timestamps: true
 });
 
 // Encriptar password
-userSchema.pre('save', async function () {
-    // si un password está encriptado, ya no lo vuelve a encriptar
-    if (!this.isModified('password')) next();
+userSchema.pre('save', async function (next) {
+    // Si un password está encriptado, ya no lo vuelve a encriptar
+    if (!this.isModified('password')) return next();
 
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);

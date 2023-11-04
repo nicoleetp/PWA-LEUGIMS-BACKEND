@@ -7,15 +7,16 @@ import {
     deleteService,
     getServicesByCategory,
 } from '../controllers/serviceController.js';
+import { verifyToken } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', createService);
 router.get('/', getAllServices);
-router.get('/:id', getServiceById);
-router.put('/:id', updateService);
-router.delete('/:id', deleteService);
 router.get('/byCategory/:id', getServicesByCategory);
+router.get('/:id', getServiceById);
+router.post('/', verifyToken, createService);
+router.put('/:id', verifyToken, updateService);
+router.delete('/:id', verifyToken, deleteService);
 
 
 export default router;
