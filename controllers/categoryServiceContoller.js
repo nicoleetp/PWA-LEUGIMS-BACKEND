@@ -1,4 +1,5 @@
 import CategoryService from '../models/CategoryService.js';
+import Service from '../models/Service.js';
 
 const createCategoryService = async (req, res) => {
     try {
@@ -55,13 +56,24 @@ const updateCategoryService = async (req, res) => {
 const deleteCategoryService = async (req, res) => {
     try {
         const categoryServiceId = req.params.id;
-        await CategoryService.findByIdAndDelete(categoryServiceId);
+        const categoryService = await CategoryService.findById(categoryServiceId);
+        if (!categoryService) {
+            return res.status(404).json({ error: 'Categoría de servicio no encontrada' });
+        }
+
+        const services = await Service.countDocuments({ categoryService: categoryService._id });
+        if (services > 0) {
+            return res.status(400).json({ error: 'No se puede eliminar la categoría de servicio porque tiene servicios asociados' });
+        }
+
+        await categoryService.deleteOne({ _id: categoryService._id });
         res.json({ message: 'Categoría de servicio eliminada con éxito' });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
 };
+
 
 export {
     getAllCategoryServices,
